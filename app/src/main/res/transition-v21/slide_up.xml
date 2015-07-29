@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android">
+    <transitionSet
+        android:transitionOrdering="together"
+        android:duration="@android:integer/config_longAnimTime"
+        android:fromYDelta="100%"
+        android:toYDelta="0"
+        android:interpolator="@android:anim/anticipate_interpolator">
+        <changeBounds/>
+        <changeImageTransform/>
+        <changeTransform />
+        <changeClipBounds />
+    </transitionSet>
+  <!--  <fade>
+        <targets>
+            <target android:excludeId="@id/tv_name"/>
+        </targets>
+    </fade> -->
+</transitionSet>
