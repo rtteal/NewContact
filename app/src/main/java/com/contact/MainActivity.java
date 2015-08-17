@@ -1,22 +1,33 @@
 package com.contact;
 
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Path;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.ChangeBounds;
+import android.transition.ChangeImageTransform;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionSet;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 
 import com.contact.adapters.ContactAdapter;
 import com.simplecontacts.R;
@@ -25,9 +36,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MainActivity extends AppCompatActivity implements ContactAdapter.OnContactClickListener {
     private static final String TAG = "MainActivity";
     @Bind(R.id.contact_recycler_view) RecyclerView mRecyclerView;
+    @Bind((R.id.iv_background)) ImageView ivBackground;
     @Bind(R.id.appBar) Toolbar toolbar;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -53,6 +66,12 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.On
         // specify an adapter (see also next example)
         mAdapter = new ContactAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
+
+        Window window = getWindow();
+
+        window.setTransitionBackgroundFadeDuration(300);
+        window.setReenterTransition(getEnterTransition());
+        window.setExitTransition(getExitTransition());
     }
 
     @Override
@@ -87,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.On
         //path.lineTo(0.2f, 0.2f);
         android.view.animation.Interpolator accelerate = AnimationUtils.loadInterpolator(MainActivity.this, android.R.interpolator.fast_out_linear_in);
         //startAnimation(accelerate, 1000, path);
-        exit();
+        //exit();
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -96,19 +115,13 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.On
                 getWindow().setAllowEnterTransitionOverlap(true);
                 Intent i = new Intent(MainActivity.this, ContactActivity.class);
 
-               /* View decor = getWindow().getDecorView();
-                View statusBar = decor.findViewById(android.R.id.statusBarBackground);
-                View navBar = decor.findViewById(android.R.id.navigationBarBackground);
-                View actionBar = decor.findViewById(getResources().getIdentifier(
-                        "action_bar_container", "id", "android")); */
-
                 View tvName = view.findViewById(R.id.tv_name);
-
-
 
                 ActivityOptions options = ActivityOptions
                         .makeSceneTransitionAnimation(MainActivity.this,
                                 Pair.create(tvName, tvName.getTransitionName()));
+                                //Pair.create((View) toolbar, toolbar.getTransitionName()));
+                               // Pair.create((View) ivBackground, ivBackground.getTransitionName()));
                                /* Pair.create(statusBar, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME),
                                 Pair.create(navBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME),
                                 Pair.create(actionBar, actionBar.getTransitionName())); */
@@ -116,15 +129,33 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.On
                 //startActivity(i);
                 //overridePendingTransition(R.anim.move_up, R.anim.move_up);
             }
-        }, 1000);
+        }, 300);
 
+    }
+
+    private TransitionSet getEnterTransition() {
+        return createTransitions(new Fade(Fade.IN), new Slide(Gravity.TOP), new ChangeImageTransform(), new ChangeBounds());
+    }
+
+    private TransitionSet getExitTransition() {
+        return createTransitions(new Fade(Fade.OUT), new Slide(Gravity.TOP), new ChangeImageTransform(), new ChangeBounds());
+    }
+
+    private TransitionSet createTransitions(Transition... transitions) {
+        TransitionSet transitionSet = new TransitionSet();
+        transitionSet.setOrdering(TransitionSet.ORDERING_TOGETHER);
+        for (Transition transition : transitions) {
+            transition.setDuration(300);
+            transitionSet.addTransition(transition);
+        }
+        return transitionSet;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "on resume called");
-        enter();
+        //enter();
     }
 
     private void enter() {
@@ -172,5 +203,13 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.On
         uiOptions |= View.SYSTEM_UI_FLAG_IMMERSIVE;
         uiOptions &= ~View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         flagsView.setSystemUiVisibility(uiOptions);
+    }
+
+    // http://www.androiddesignpatterns.com/2014/12/activity-fragment-transitions-in-android-lollipop-part1.html
+    private static void toggleVisibility(View... views) {
+        for (View view : views) {
+            boolean isVisible = view.getVisibility() == View.VISIBLE;
+            view.setVisibility(isVisible ? View.INVISIBLE : View.VISIBLE);
+        }
     }
 }

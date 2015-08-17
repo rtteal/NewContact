@@ -1,27 +1,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.contact.ContactActivity">
-
-   <!-- <android.support.v7.widget.Toolbar
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:translationY="-100dp"
-        style="@style/MainActionBar"
-        android:transitionName="app_bar">
-
-    </android.support.v7.widget.Toolbar> -->
 
     <ImageView
         android:id="@+id/iv_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleX="10"
-        android:scaleY="10"
-        android:src="@mipmap/ic_background2"
+        android:adjustViewBounds="true"
+        android:src="@drawable/background"
         android:transitionName="pic_bac"/>
+
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/SimpleContactsTheme.DetailActionBar"
+        android:transitionName="app_bar"/>
 
     <TextView
         android:id="@+id/tv_name"
@@ -29,6 +26,6 @@
         android:clickable="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/iv_background"/>
+        android:layout_below="@+id/appBar"/>
 
 </RelativeLayout>

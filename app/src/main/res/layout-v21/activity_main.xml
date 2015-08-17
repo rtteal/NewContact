@@ -12,15 +12,23 @@
     <android.support.v7.widget.Toolbar
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/appBar"
+        android:elevation="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/MainActionBar"
+        style="@style/SimpleContactsTheme.MainActionBar"
         app:title="@string/main_toolbar"
-        android:transitionName="app_bar">
+        android:transitionName="app_bar"/>
 
-    </android.support.v7.widget.Toolbar>
+    <ImageView
+        android:id="@+id/iv_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:scaleX="10"
+        android:scaleY="10"
+        android:src="@mipmap/ic_background2"
+        android:transitionName="pic_bac"/>
 
-    <!-- A RecyclerView with some commonly used attributes -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/contact_recycler_view"
         android:scrollbars="vertical"
